@@ -58,6 +58,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "421773572020-90t1f7hvsjmfk25cke2g4pseph3spjv1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itsmuse.nestjunior",
+            "certificate_hash": "ca74ccc1636c4fcd6b21c5710d951ba4ded70dbb"
+          }
+        },
+        {
           "client_id": "421773572020-8vec80jsioinp00t22kmoesactnrhhn1.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -801,108 +801,103 @@ const DriverLocationMap = ({ driverLocations, userLocation }: { driverLocations:
         >
           <Ionicons name="language" size={24} color={Colors.textDark} />
         </TouchableOpacity>
-
-{/* HIDING RIDESHARE UI FOR NEST JUNIOR
-  ref={sheetRef}
-  index={0}
-  snapPoints={snapPoints}
-  backgroundComponent={({ style }) => (
-    <View style={[style, styles.rideOptionsOverlay]} />
-  )}
-          backgroundStyle={styles.bottomSheetBackground}
-        handleIndicatorStyle={styles.bottomSheetHandle}
->
-  <BottomSheetScrollView contentContainerStyle={styles.bottomSheetContent}>
-              {/* --- NEW & IMPROVED: Dedicated Services Section --- */}
-            <View style={styles.sectionContainer}>
-                <Text className="font-JakartaBold" style={styles.sectionTitle}>More Services</Text>
-                <FlatList
-                    data={services}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    keyExtractor={(item) => item.key}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity style={styles.serviceCard} onPress={item.action}>
-                            <View style={[styles.serviceIconContainer, { backgroundColor: item.color + '20' }]}>
-                               <MaterialCommunityIcons name={item.icon} size={24} color={item.color} />
-                            </View>
-                            <Text className="font-JakartaMedium" style={styles.serviceCardTitle}>{item.title}</Text>
-                        </TouchableOpacity>
-                    )}
-                    contentContainerStyle={{ paddingRight: 16 }}
-                />
-            </View>
-          {/* Welcome Header & Location Inputs */}
-          <View style={styles.welcomeHeader}>
-            <View style={styles.locationInputsContainer}>
-            {destinationLatitude && destinationLongitude && (
-              <Text style={styles.travelTimeText}>
-                {translations[language]}
-              </Text>
-            )}
-          </View>  
-
-                {/* Choose Your Ride Button - Opens Modal */}
-              <View style={styles.sectionContainer}>
-                <View style={styles.sectionHeader}>
-                  {/*<MaterialCommunityIcons name="numeric-1-circle" size={24} color={Colors.primaryOrange} />*/}
-                  <Text className="font-JakartaExtraBold"  style={styles.sectionTitle}>Choose Your Ride</Text>
-                </View>
-                <TouchableOpacity
-                  style={styles.chooseRideButton}
-                  onPress={() => setShowRideSelectionModal(true)}
-                  disabled={!destinationLatitude || !destinationLongitude}
-                >
-                  <Text style={styles.chooseRideButtonText}>
-                    {selectedRide ? `Selected: ${selectedRide}` : 'Tap to Select Ride Type'}
-                  </Text>
-                  <Ionicons name="chevron-forward" size={24} color={Colors.backgroundWhite} />
-                </TouchableOpacity>
-                {(!destinationLatitude || !destinationLongitude) && (
-                  <Text style={styles.destinationWarningText}>
-                    Please set your destination to choose a ride.
-                  </Text>
-                )}
+{/* HIDING RIDESHARE UI FOR NEST JUNIOR */}
+{false && (
+  <BottomSheet
+    ref={sheetRef}
+    index={0}
+    snapPoints={snapPoints}
+    backgroundComponent={({ style }) => (
+      <View style={[style, styles.rideOptionsOverlay]} />
+    )}
+    backgroundStyle={styles.bottomSheetBackground}
+    handleIndicatorStyle={styles.bottomSheetHandle}
+  >
+    <BottomSheetScrollView contentContainerStyle={styles.bottomSheetContent}>
+      {/* --- NEW & IMPROVED: Dedicated Services Section --- */}
+      <View style={styles.sectionContainer}>
+        <Text className="font-JakartaBold" style={styles.sectionTitle}>More Services</Text>
+        <FlatList
+          data={services}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(item) => item.key}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={styles.serviceCard} onPress={item.action}>
+              <View style={[styles.serviceIconContainer, { backgroundColor: item.color + '20' }]}>
+                <MaterialCommunityIcons name={item.icon} size={24} color={item.color} />
               </View>
-              <View style={styles.locationInputSeparator} />
-            </View>
-          {/* Other Service Sections */}
-          <View style={styles.otherServicesContainer}>
-           {/* <TouchableOpacity
-              style={styles.serviceCard}
-              onPress={() => router.push('/game-rooms')}
-            >
-              <View style={styles.serviceCardContent}>
-                <MaterialIcons name="emergency-recording" size={24} color={Colors.primaryOrange} />
-                <Text style={styles.serviceCardTitle}>Go live or watch a live-stream</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />
-              <Text style={styles.serviceCardDescription}>Gain an audience and make a revenue</Text>
-            </TouchableOpacity>*/}
+              <Text className="font-JakartaMedium" style={styles.serviceCardTitle}>{item.title}</Text>
+            </TouchableOpacity>
+          )}
+          contentContainerStyle={{ paddingRight: 16 }}
+        />
+      </View>
+
+      {/* Welcome Header & Location Inputs */}
+      <View style={styles.welcomeHeader}>
+        <View style={styles.locationInputsContainer}>
+          {destinationLatitude && destinationLongitude && (
+            <Text style={styles.travelTimeText}>
+              {translations[language]}
+            </Text>
+          )}
+        </View>  
+
+        {/* Choose Your Ride Button - Opens Modal */}
+        <View style={styles.sectionContainer}>
+          <View style={styles.sectionHeader}>
+            {/*<MaterialCommunityIcons name="numeric-1-circle" size={24} color={Colors.primaryOrange} />*/}
+            <Text className="font-JakartaExtraBold"  style={styles.sectionTitle}>Choose Your Ride</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.chooseRideButton}
+            onPress={() => setShowRideSelectionModal(true)}
+            disabled={!destinationLatitude || !destinationLongitude}
+          >
+            <Text style={styles.chooseRideButtonText}>
+              {selectedRide ? `Selected: ${selectedRide}` : 'Tap to Select Ride Type'}
+            </Text>
+            <Ionicons name="chevron-forward" size={24} color={Colors.backgroundWhite} />
+          </TouchableOpacity>
+          {(!destinationLatitude || !destinationLongitude) && (
+            <Text style={styles.destinationWarningText}>
+              Please set your destination to choose a ride.
+            </Text>
+          )}
+        </View>
+        <View style={styles.locationInputSeparator} />
+      </View>
+
+      {/* Other Service Sections */}
+      <View style={styles.otherServicesContainer}>
+        {/* <TouchableOpacity
+          style={styles.serviceCard}
+          onPress={() => router.push('/game-rooms')}
+        >
+          <View style={styles.serviceCardContent}>
+            <MaterialIcons name="emergency-recording" size={24} color={Colors.primaryOrange} />
+            <Text style={styles.serviceCardTitle}>Go live or watch a live-stream</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />
+          <Text style={styles.serviceCardDescription}>Gain an audience and make a revenue</Text>
+        </TouchableOpacity>*/}
 
         {/*    <TouchableOpacity
-              style={styles.serviceCard}
-              onPress={() => setShowSchedule(true)}
-            >
-              <View style={styles.serviceCardContent}>
-                <MaterialIcons name="schedule" size={24} color={Colors.secondaryTeal} />
-                <Text style={styles.serviceCardTitle}>Schedule Ride</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />
-              <Text style={styles.serviceCardDescription}>Plan your rides in advance</Text>
-            </TouchableOpacity>*/}
-
-            {/* Embedded Posts Page */}
-{/*            <View style={styles.embeddedPostsContainer}>
-              <PostsPage
-                showHeader={false}
-                embeddedView={true}
-              />
-            </View>*/}
+          style={styles.serviceCard}
+          onPress={() => setShowSchedule(true)}
+        >
+          <View style={styles.serviceCardContent}>
+            <MaterialIcons name="schedule" size={24} color={Colors.secondaryTeal} />
+            <Text style={styles.serviceCardTitle}>Schedule Ride</Text>
           </View>
-  </BottomSheetScrollView>
-</BottomSheet>
-*/}
+          <Ionicons name="chevron-forward" size={20} color={Colors.textLight} />
+          <Text style={styles.serviceCardDescription}>Plan your rides in advance</Text>
+        </TouchableOpacity>*/}
+      </View>
+    </BottomSheetScrollView>
+  </BottomSheet>
+)}
       {/* Modals */}
       {/* Matching Preferences Modal */}
       <Modal visible={showMatchingOptionsModal} transparent animationType="fade">
@@ -1338,22 +1333,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.backgroundWhite,
   },
-mapContainer: {
-  width: '100%',
-  height: '100%', // Changed from screenHeight * 0.65 to fill the screen
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0,
-  zIndex: 0,
-},    width: '100%',
-    height: screenHeight * 0.65, // Map takes 65% of screen height
-    position: 'absolute', // Position map absolutely to allow overlay
+  mapContainer: {
+    width: '100%',
+    height: '100%', // Changed from screenHeight * 0.65 to fill the screen
+    position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    zIndex: 0, // Ensure map is behind overlay
-  },
+    zIndex: 0,
+  }, 
   rideOptionsOverlay: {
     position: 'absolute',
     bottom: 0,
