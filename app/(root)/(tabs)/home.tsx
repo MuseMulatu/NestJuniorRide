@@ -802,7 +802,7 @@ const DriverLocationMap = ({ driverLocations, userLocation }: { driverLocations:
           <Ionicons name="language" size={24} color={Colors.textDark} />
         </TouchableOpacity>
 
-    <BottomSheet
+{/* HIDING RIDESHARE UI FOR NEST JUNIOR
   ref={sheetRef}
   index={0}
   snapPoints={snapPoints}
@@ -902,6 +902,7 @@ const DriverLocationMap = ({ driverLocations, userLocation }: { driverLocations:
           </View>
   </BottomSheetScrollView>
 </BottomSheet>
+*/}
       {/* Modals */}
       {/* Matching Preferences Modal */}
       <Modal visible={showMatchingOptionsModal} transparent animationType="fade">
@@ -1337,8 +1338,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.backgroundWhite,
   },
-  mapContainer: {
-    width: '100%',
+mapContainer: {
+  width: '100%',
+  height: '100%', // Changed from screenHeight * 0.65 to fill the screen
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  zIndex: 0,
+},    width: '100%',
     height: screenHeight * 0.65, // Map takes 65% of screen height
     position: 'absolute', // Position map absolutely to allow overlay
     top: 0,

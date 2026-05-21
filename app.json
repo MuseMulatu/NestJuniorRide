@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Hulum",
-    "slug": "uber",
+    "name": "Nest Junior",
+    "slug": "nest-junior",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -12,7 +12,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#FFFFFF"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "jsEngine": "hermes",
     "ios": {
       "supportsTablet": true
@@ -23,7 +25,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.itsmuse.uber",
+      "package": "com.itsmuse.nestjunior",
       "intentFilters": [
         {
           "action": "VIEW",
@@ -31,11 +33,14 @@
           "data": [
             {
               "scheme": "https",
-              "host": "app.share-rides.com", // Your Node.js server domain
-              "pathPrefix": "/" // The specific path you want the app to handle
+              "host": "app.share-rides.com",
+              "pathPrefix": "/"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ],
       "permissions": [
@@ -61,15 +66,25 @@
       "@react-native-firebase/app",
       "@react-native-firebase/crashlytics",
       "@react-native-firebase/auth",
-        [
+      [
         "expo-notifications",
         {
           "icon": "./assets/images/icon.png",
           "color": "#ffffff",
           "defaultChannelId": "urgent_notifications",
-          "vibrationPattern": [0, 200, 100, 1000, 300, 200, 100, 1000, 300],
+          "vibrationPattern": [
+            0,
+            200,
+            100,
+            1000,
+            300,
+            200,
+            100,
+            1000,
+            300
+          ],
           "sounds": [
-            "./assets/sounds/ride_request.mp3",
+            "./assets/sounds/ride_request.mp3"
           ],
           "enableBackgroundRemoteNotifications": true
         }
@@ -90,15 +105,16 @@
         }
       ],
       [
-      "expo-build-properties", {
-      "android": {
-        "enableProguardInReleaseBuilds": true,
-        "enableShrinkResourcesInReleaseBuilds": true,
-        "extraProguardRules": "-keep public class com.horcrux.svg.** {*;}",
-        "allowBackup": false
-      }
-    }
-  ],
+        "expo-build-properties",
+        {
+          "android": {
+            "enableProguardInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true,
+            "extraProguardRules": "-keep public class com.horcrux.svg.** {*;}",
+            "allowBackup": false
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
@@ -108,7 +124,7 @@
         "origin": "https://uber.dev/"
       },
       "eas": {
-        "projectId": "8baa5ba0-a303-4e82-b65d-16e0c1220607"
+        "projectId": "161acd81-c274-428a-acef-a9c628e45095"
       }
     },
     "runtimeVersion": {

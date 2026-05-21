@@ -1,129 +1,73 @@
 import { Tabs } from "expo-router";
-import { Image, ImageSourcePropType, View, Text, Animated } from "react-native";
-import rewardsIcon from '@/assets/icons/rewards2.png'; // Assuming this icon is still used or can be replaced
-import { useLanguageStore } from "@/store";
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { icons } from "@/constants"; // Assuming icons are used elsewhere
-import { useEffect, useState, useRef } from 'react';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { View } from "react-native";
+import { Ionicons } from '@expo/vector-icons';
+import { useLanguageStore } from "@/store"; // Re-added the language store
 
-// Define the consistent color palette
+// Retained consistent color palette
 const Colors = {
-  primaryOrange: "#FF8C00", // Inviting Orange
-  secondaryTeal: "#0FB1BB", // Vibrant Teal
-  textDark: "#1A202C", // Dark Charcoal
-  textMedium: "#4A5568", // Medium Gray
-  textLight: "#718096", // Light Gray
+  primaryOrange: "#FF8C00", 
+  secondaryTeal: "#0FB1BB", 
+  textDark: "#1A202C", 
+  textMedium: "#4A5568", 
+  textLight: "#718096", 
   backgroundWhite: "#FFFFFF",
-  backgroundLightGray: "#F7FAFC",
-  borderLight: "#E2E8F0",
 };
 
+// Updated Translation Dictionary for Nest Junior Tabs
 export const translation1 = {
-    ENG: {
-    Home: "Home",
-    History: "History",
-    Posts: "Social",
-    Subscription: "Subscription",
-    Profile: "Profile",
-    Live: "Live",
-    Jobs: "Jobs" 
+  ENG: {
+    Map: "Map",
+    MyKids: "My Kids",
+    LiveFeed: "Live Feed",
+    Alerts: "Alerts",
+    Profile: "Profile"
   },
   ORM: {
-    Home: "Mana",
-    History: "Seenaa",
-    Posts: "Hawaasaa",
-    Subscription: "Ji'a ji'aan",
-    Profile: "Isin",
-    Live: "Laayivii",
-    Jobs: "Hojii"
+    Map: "Kaartaa",
+    MyKids: "Ijoollee koo",
+    LiveFeed: "Kallattii",
+    Alerts: "Akeekkachiisa",
+    Profile: "Isin"
   },
   AMH: {
-    Home: "ዋና",
-    History: "ታሪክ",
-    Posts: "ማህበራዊ",
-    Subscription: "ወርሃዊ",
-    Profile: "እርሶ",
-    Live: "ቀጥታ",
-    Jobs: "ስራዎች"
+    Map: "ካርታ",
+    MyKids: "ልጆቼ",
+    LiveFeed: "ቀጥታ",
+    Alerts: "ማሳወቂያዎች",
+    Profile: "እርሶ"
   },
-}
+};
 
-const TabIcon = ({ focused, routeName }: { focused: boolean; routeName: string }) => {
-  const iconColor = focused ? Colors.secondaryTeal : Colors.textLight; // Active Teal, Inactive Light Gray
-  const iconSize = 24; // Slightly smaller for better balance
-
-  const getIconName = () => {
-    switch (routeName) {
-      case 'home':
-        return focused ? 'home' : 'home-outline';
-      case 'live':
-        return focused ? 'camera' : 'camera-outline';
-      case 'posts':
-        return focused ? 'people-sharp' : 'people-outline'; // Changed to people icon for "Social"
-      case 'jobs':
-        return focused ? 'briefcase' : 'briefcase-outline';
-      case 'profile':
-        return focused ? 'person' : 'person-outline';
-      default:
-        return 'help-circle';
-    }
-  };
-
+const TabIcon = ({ focused, name }: { focused: boolean; name: any }) => {
   return (
     <View className="items-center justify-center pt-2">
-      <View className={`p-2 rounded-full ${focused ? 'bg-opacity-10' : ''}`} // Subtle background for active icon
-        style={focused ? { backgroundColor: Colors.secondaryTeal + '1A' } : {}} // Add a light tint to active icon background
+      <View 
+        className={`p-2 rounded-full ${focused ? 'bg-opacity-10' : ''}`}
+        style={focused ? { backgroundColor: Colors.secondaryTeal + '1A' } : {}}
       >
         <Ionicons
-          name={getIconName()}
-          size={iconSize}
-          color={iconColor}
+          name={name}
+          size={24}
+          color={focused ? Colors.secondaryTeal : Colors.textLight}
         />
       </View>
     </View>
   );
 };
 
-const SpecialTabIcon = ({ focused }: { focused: boolean }) => (
-  <View className="items-center justify-center -mt-6">
-    <View className={`
-      p-3 rounded-full 
-      ${focused ? 
-        'shadow-lg' : // Stronger shadow for active
-        'shadow-md' // Lighter shadow for inactive
-      }`}
-      style={{
-        backgroundColor: Colors.primaryOrange, // Use primary orange for the special icon
-        shadowColor: Colors.primaryOrange, // Match shadow color
-        shadowOpacity: focused ? 0.4 : 0.2,
-        shadowRadius: focused ? 10 : 5,
-        elevation: focused ? 10 : 5, // Android elevation
-      }}
-    >
-      <MaterialIcons
-        name="emoji-people" // This icon is good for "Social"
-        size={32}
-        color={Colors.backgroundWhite} // White icon color
-        style={{
-          transform: [{ scale: focused ? 1 : 0.95 }],
-          opacity: focused ? 1 : 0.8
-        }}
-      />
-    </View>
-  </View>
-);
-
 export default function Layout() {
+  // Grab the current language from the store
   const { language } = useLanguageStore();
-  const { Home, Live, Posts, Jobs, Profile } = translation1[language];
+  
+  // Extract the translated labels safely
+  const { Map, MyKids, LiveFeed, Alerts, Profile } = translation1[language] || translation1.ENG;
 
   return (
     <Tabs
-      initialRouteName="home" // Changed initial route to home
-      screenOptions={({ route }) => ({
-        tabBarActiveTintColor: Colors.secondaryTeal, // Active Teal
-        tabBarInactiveTintColor: Colors.textLight, // Inactive Light Gray
+      initialRouteName="home"
+      screenOptions={{
+        tabBarActiveTintColor: Colors.secondaryTeal,
+        tabBarInactiveTintColor: Colors.textLight,
         tabBarLabelStyle: {
           fontFamily: "Jakarta-SemiBold",
           fontSize: 12,
@@ -131,77 +75,88 @@ export default function Layout() {
           letterSpacing: 0.2,
         },
         tabBarStyle: {
-          backgroundColor: Colors.backgroundWhite, // White background
+          backgroundColor: Colors.backgroundWhite,
           borderTopWidth: 0,
-          height: 80, // Slightly taller for modern look
+          height: 80,
           paddingHorizontal: 16,
-          // Modern shadow for floating effect
-          shadowColor: Colors.textDark, // Darker shadow color
-          shadowOffset: { width: 0, height: -4 }, // Shadow upwards
+          shadowColor: Colors.textDark,
+          shadowOffset: { width: 0, height: -4 },
           shadowOpacity: 0.05,
           shadowRadius: 15,
-          elevation: 15, // Android elevation
+          elevation: 15,
           position: "absolute",
           bottom: 0,
           left: 0,
           right: 0,
-          borderRadius: 0, // Keep sharp bottom edges
         },
-      })}
+        headerShown: false,
+      }}
     >
+      {/* Tab 1: Map -> Maps to home.tsx */}
       <Tabs.Screen
         name="home"
         options={{
-          tabBarLabel: Home,
-          headerShown: false,
+          title: Map, // Dynamically translated
           tabBarIcon: ({ focused }) => (
-            <TabIcon focused={focused} routeName="home" />
+            <TabIcon focused={focused} name={focused ? 'map' : 'map-outline'} />
           ),
         }}
       />
 
+      {/* Tab 2: My Kids -> Routes to manage-children.tsx */}
+      <Tabs.Screen
+        name="manage-children"
+        options={{
+          title: MyKids, // Dynamically translated
+          href: "/(root)/manage-children", 
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} name={focused ? 'people' : 'people-outline'} />
+          ),
+        }}
+      />
+
+      {/* Tab 3: Live Feed -> Maps to live.jsx */}
       <Tabs.Screen
         name="live"
         options={{
-          tabBarLabel: Live,
-          headerShown: false,
+          title: LiveFeed, // Dynamically translated
           tabBarIcon: ({ focused }) => (
-            <TabIcon focused={focused} routeName="live" />
+            <TabIcon focused={focused} name={focused ? 'videocam' : 'videocam-outline'} />
           ),
         }}
       />
 
+      {/* Tab 4: Alerts -> Routes to history.tsx */}
       <Tabs.Screen
-        name="posts" // Assuming 'posts' is your social media tab
+        name="history"
         options={{
-          tabBarLabel: Posts, // "Social"
-          headerShown: false,
+          title: Alerts, // Dynamically translated
+          href: "/(root)/history",
           tabBarIcon: ({ focused }) => (
-            <SpecialTabIcon focused={focused} /> // Special icon for the central "Social" tab
+            <TabIcon focused={focused} name={focused ? 'notifications' : 'notifications-outline'} />
           ),
         }}
       />
 
-      <Tabs.Screen
-        name="jobs"
-        options={{
-          tabBarLabel: Jobs,
-          headerShown: false,
-          tabBarIcon: ({ focused }) => (
-            <TabIcon focused={focused} routeName="jobs" />
-          ),
-        }}
-      />
-
+      {/* Tab 5: Profile -> Maps to profile.tsx */}
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarLabel: Profile,
-          headerShown: false,
+          title: Profile, // Dynamically translated
           tabBarIcon: ({ focused }) => (
-            <TabIcon focused={focused} routeName="profile" />
+            <TabIcon focused={focused} name={focused ? 'person' : 'person-outline'} />
           ),
         }}
+      />
+
+      {/* --- HIDDEN TABS (Maintained for non-destructive architecture) --- */}
+      <Tabs.Screen
+        name="posts"
+        options={{ href: null }} 
+      />
+      <Tabs.Screen
+        name="jobs"
+        options={{ href: null }} 
       />
     </Tabs>
   );
