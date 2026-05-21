@@ -1,0 +1,121 @@
+{
+  "expo": {
+    "name": "Hulum",
+    "slug": "uber",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "sharesuperapp",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "jsEngine": "hermes",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "googleServicesFile": "./google-services.json",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.itsmuse.uber",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "app.share-rides.com", // Your Node.js server domain
+              "pathPrefix": "/" // The specific path you want the app to handle
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ],
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDA8XVAaxYSh8A5tLO02T9sEJqhHN6EXkE"
+        }
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "server",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/crashlytics",
+      "@react-native-firebase/auth",
+        [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon.png",
+          "color": "#ffffff",
+          "defaultChannelId": "urgent_notifications",
+          "vibrationPattern": [0, 200, 100, 1000, 300, 200, 100, 1000, 300],
+          "sounds": [
+            "./assets/sounds/ride_request.mp3",
+          ],
+          "enableBackgroundRemoteNotifications": true
+        }
+      ],
+      [
+        "expo-router",
+        {
+          "origin": "https://uber.dev/"
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/yigezubisratgothic.ttf",
+            "./assets/fonts/hiwua.ttf"
+          ]
+        }
+      ],
+      [
+      "expo-build-properties", {
+      "android": {
+        "enableProguardInReleaseBuilds": true,
+        "enableShrinkResourcesInReleaseBuilds": true,
+        "extraProguardRules": "-keep public class com.horcrux.svg.** {*;}",
+        "allowBackup": false
+      }
+    }
+  ],
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": "https://uber.dev/"
+      },
+      "eas": {
+        "projectId": "8baa5ba0-a303-4e82-b65d-16e0c1220607"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/8baa5ba0-a303-4e82-b65d-16e0c1220607"
+    }
+  }
+}

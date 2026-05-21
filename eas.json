@@ -1,0 +1,88 @@
+{
+  "build": {
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      },
+      "channel": "default",
+      "env": {
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_ZW1lcmdpbmctbXVsZS05OS5jbGVyay5hY2NvdW50cy5kZXYk",
+        "DATABASE_URL": "postgresql://neondb_owner:HBSmwAqFt35C@ep-still-sky-a26eni1l.eu-central-1.aws.neon.tech/neondb?sslmode=require",
+        "EXPO_PUBLIC_SERVER_URL": "https://uber.dev/",
+        "EXPO_PUBLIC_GEOAPIFY_API_KEY": "57508a092ed84e1a854124ef718cba7a",
+        "EXPO_PUBLIC_GOOGLE_API_KEY": "AIzaSyDA8XVAaxYSh8A5tLO02T9sEJqhHN6EXkE",
+        "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyA9Ju1nNGcJeQn-qARMH0TrIs5mOKWCoOw",
+        "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN": "moringa-rides.firebaseapp.com",
+        "EXPO_PUBLIC_FIREBASE_PROJECT_ID": "moringa-rides",
+        "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET": "moringa-rides.appspot.com",
+        "EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "303235669405",
+        "EXPO_PUBLIC_FIREBASE_APP_ID": "1:303235669405:web:f978b292c79d4ecd3ee374",
+        "EXPO_PUBLIC_MEASUREMENT_ID": "G-XLYGGCW5ZQ"
+      }
+    },
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_cnVsaW5nLWNvdWdhci03NS5jbGVyay5hY2NvdW50cy5kZXYk",
+        "DATABASE_URL": "postgresql://neondb_owner:HBSmwAqFt35C@ep-still-sky-a26eni1l.eu-central-1.aws.neon.tech/neondb?sslmode=require",
+        "EXPO_PUBLIC_SERVER_URL": "https://uber.dev/",
+        "EXPO_PUBLIC_GEOAPIFY_API_KEY": "57508a092ed84e1a854124ef718cba7a",
+        "EXPO_PUBLIC_GOOGLE_API_KEY": "AIzaSyDA8XVAaxYSh8A5tLO02T9sEJqhHN6EXkE",
+        "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyA9Ju1nNGcJeQn-qARMH0TrIs5mOKWCoOw",
+        "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN": "moringa-rides.firebaseapp.com",
+        "EXPO_PUBLIC_FIREBASE_PROJECT_ID": "moringa-rides",
+        "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET": "moringa-rides.appspot.com",
+        "EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "303235669405",
+        "EXPO_PUBLIC_FIREBASE_APP_ID": "1:303235669405:web:f978b292c79d4ecd3ee374",
+        "EXPO_PUBLIC_MEASUREMENT_ID": "G-XLYGGCW5ZQ"
+      }
+    },
+    "preview2": {
+      "android": {
+        "gradleCommand": ":app:assembleRelease",
+        "env": {
+          "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_ZW1lcmdpbmctbXVsZS05OS5jbGVyay5hY2NvdW50cy5kZXYk",
+          "DATABASE_URL": "postgresql://neondb_owner:HBSmwAqFt35C@ep-still-sky-a26eni1l.eu-central-1.aws.neon.tech/neondb?sslmode=require",
+          "EXPO_PUBLIC_SERVER_URL": "https://uber.dev/",
+          "EXPO_PUBLIC_GEOAPIFY_API_KEY": "57508a092ed84e1a854124ef718cba7a",
+          "EXPO_PUBLIC_GOOGLE_API_KEY": "AIzaSyDA8XVAaxYSh8A5tLO02T9sEJqhHN6EXkE",
+          "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyA9Ju1nNGcJeQn-qARMH0TrIs5mOKWCoOw",
+          "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN": "moringa-rides.firebaseapp.com",
+          "EXPO_PUBLIC_FIREBASE_PROJECT_ID": "moringa-rides",
+          "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET": "moringa-rides.appspot.com",
+          "EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "303235669405",
+          "EXPO_PUBLIC_FIREBASE_APP_ID": "1:303235669405:web:f978b292c79d4ecd3ee374",
+          "EXPO_PUBLIC_MEASUREMENT_ID": "G-XLYGGCW5ZQ"
+        }
+      }
+    },
+    "preview3": {
+      "developmentClient": true
+    },
+    "preview4": {
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_ZW1lcmdpbmctbXVsZS05OS5jbGVyay5hY2NvdW50cy5kZXYk",
+        "DATABASE_URL": "postgresql://neondb_owner:HBSmwAqFt35C@ep-still-sky-a26eni1l.eu-central-1.aws.neon.tech/neondb?sslmode=require",
+        "EXPO_PUBLIC_SERVER_URL": "https://uber.dev/",
+        "EXPO_PUBLIC_GEOAPIFY_API_KEY": "57508a092ed84e1a854124ef718cba7a",
+        "EXPO_PUBLIC_GOOGLE_API_KEY": "AIzaSyDA8XVAaxYSh8A5tLO02T9sEJqhHN6EXkE",
+        "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyA9Ju1nNGcJeQn-qARMH0TrIs5mOKWCoOw",
+        "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN": "moringa-rides.firebaseapp.com",
+        "EXPO_PUBLIC_FIREBASE_PROJECT_ID": "moringa-rides",
+        "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET": "moringa-rides.appspot.com",
+        "EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "303235669405",
+        "EXPO_PUBLIC_FIREBASE_APP_ID": "1:303235669405:web:f978b292c79d4ecd3ee374",
+        "EXPO_PUBLIC_MEASUREMENT_ID": "G-XLYGGCW5ZQ"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "channel": "default"
+    }
+  },
+  "cli": {
+    "appVersionSource": "remote"
+  }
+}
