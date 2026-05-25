@@ -103,35 +103,33 @@ export default function Layout() {
         }}
       />
 
-      {/* Tab 2: My Kids -> Routes to manage-children.tsx */}
+{/* Tab 2: My Kids -> Now a native tab screen */}
       <Tabs.Screen
         name="manage-children"
         options={{
-          title: MyKids, // Dynamically translated
-          href: "/(root)/manage-children", 
+          title: MyKids, 
           tabBarIcon: ({ focused }) => (
             <TabIcon focused={focused} name={focused ? 'people' : 'people-outline'} />
           ),
         }}
       />
 
-      {/* Tab 3: Live Feed -> Maps to live.jsx */}
+      {/* Tab 3: Live Feed */}
       <Tabs.Screen
         name="live"
         options={{
-          title: LiveFeed, // Dynamically translated
+          title: LiveFeed,
           tabBarIcon: ({ focused }) => (
             <TabIcon focused={focused} name={focused ? 'videocam' : 'videocam-outline'} />
           ),
         }}
       />
 
-      {/* Tab 4: Alerts -> Routes to history.tsx */}
+      {/* Tab 4: Alerts -> Now a native tab screen */}
       <Tabs.Screen
         name="history"
         options={{
-          title: Alerts, // Dynamically translated
-          href: "/(root)/history",
+          title: Alerts, 
           tabBarIcon: ({ focused }) => (
             <TabIcon focused={focused} name={focused ? 'notifications' : 'notifications-outline'} />
           ),
