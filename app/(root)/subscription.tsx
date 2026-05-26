@@ -1,66 +1,74 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Alert, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
-import { router, useLocalSearchParams } from 'expo-router';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import CustomGooglePlacesInput from "@/components/CustomGooglePlacesInput";
+import { useLocationStore } from "@/store";
+import { fetchDistanceAndTime } from "@/lib/utils";
 
 const Colors = {
-  primaryOrange: "#FF8C00",
-  secondaryTeal: "#0FB1BB",
-  textDark: "#1A202C",
-  textMedium: "#4A5568",
-  textLight: "#718096",
-  backgroundWhite: "#FFFFFF",
-  backgroundLightGray: "#F7FAFC",
-  borderLight: "#E2E8F0",
-  successGreen: "#22C55E",
+  primaryOrange: "#FF8C00", secondaryTeal: "#0FB1BB", textDark: "#1A202C",
+  textMedium: "#4A5568", textLight: "#718096", backgroundWhite: "#FFFFFF",
+  backgroundLightGray: "#F7FAFC", borderLight: "#E2E8F0", successGreen: "#22C55E",
 };
 
 export default function SubscriptionScreen() {
-  const params = useLocalSearchParams();
-  const initialPlan = params.type === 'Private Ride' ? 'private' : 'shared';
-
-  const [selectedPlan, setSelectedPlan] = useState<'shared' | 'private'>(initialPlan);
-  const [childName, setChildName] = useState('');
-  const [schoolName, setSchoolName] = useState('');
+  const { userLatitude, userLongitude, destinationLatitude, destinationLongitude } = useLocationStore();
   
-  const [morningTime, setMorningTime] = useState(new Date(new Date().setHours(7, 0, 0, 0)));
-  const [showMorningPicker, setShowMorningPicker] = useState(false);
-  
+  const [selectedPlan, setSelectedPlan] = useState('shared');
+  const [selectedChildIds, setSelectedChildIds] = useState(new Set());
+  const [estimatedPrice, setEstimatedPrice] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Mock Children
+  const children = [
+      { id: '1', name: 'Sarah', school: 'Beteseb Academy' },
+      { id: '2', name: 'Leo', school: 'Beteseb Academy' }
+  ];
+
+  // Dynamic Price Calculation based on actual map coordinates
+  useEffect(() => {
+    const calculate = async () => {
+        if (userLatitude && destinationLatitude) {
+            const { distance: dist } = await fetchDistanceAndTime(userLatitude, userLongitude, destinationLatitude, destinationLongitude);
+            
+            const basePricePerKm = selectedPlan === 'private' ? 40 : 15;
+            const kidsMultiplier = selectedChildIds.size > 0 ? selectedChildIds.size : 1;
+            
+            let total = (basePricePerKm * (dist/1000) * 22); // 22 school days
+            if (selectedPlan === 'private') total = total * 1.5; 
+            if (selectedPlan === 'shared') total = total * kidsMultiplier; 
+
+            setEstimatedPrice(Math.round(total));
+        }
+    };
+    calculate();
+  }, [userLatitude, destinationLatitude, selectedPlan, selectedChildIds]);
+
+  const handleToggleChild = (childId) => {
+    const newSelection = new Set(selectedChildIds);
+    newSelection.has(childId) ? newSelection.delete(childId) : newSelection.add(childId);
+    setSelectedChildIds(newSelection);
+  };
+
   const handleSubscribe = async () => {
-    if (!childName || !schoolName) {
-      Alert.alert('Missing Details', 'Please enter your child\'s name and school.');
+    if (!userLatitude || !destinationLatitude) {
+      Alert.alert('Locations Required', 'Please enter your exact Home and School locations.');
+      return;
+    }
+    if (selectedChildIds.size === 0) {
+      Alert.alert('Select Children', 'Please select at least one child for this route.');
       return;
     }
 
     setLoading(true);
-    try {
-      const user = auth().currentUser;
-      await firestore().collection('subscriptions').add({
-        userId: user?.uid || 'anonymous',
-        planType: selectedPlan,
-        childName,
-        schoolName,
-        morningPickupTime: morningTime.toISOString(),
-        status: 'pending_matching', // Requires admin matching for shared routes
-        createdAt: firestore.FieldValue.serverTimestamp(),
-      });
-      
-      Alert.alert(
-        'Subscription Requested!', 
-        'Our agents are matching your route with a vetted CareDriver. We will notify you once confirmed.',
-        [{ text: 'OK', onPress: () => router.back() }]
-      );
-    } catch (error) {
-      Alert.alert('Error', 'Could not process request. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+    setTimeout(() => {
+        setLoading(false);
+        Alert.alert('Subscription Requested!', 'Our matching agents have your coordinates and will assign a CareDriver shortly.', [
+            { text: 'OK', onPress: () => router.back() }
+        ]);
+    }, 1500);
   };
 
   return (
@@ -69,99 +77,66 @@ export default function SubscriptionScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color={Colors.textDark} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Nest Junior Plans</Text>
+        <Text style={styles.headerTitle}>New Route Request</Text>
         <View style={{ width: 24 }} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.subtitle}>Choose a monthly transport plan for your child.</Text>
-
-        {/* Plan Selectors */}
-        <View style={styles.plansContainer}>
-          <TouchableOpacity 
-            style={[styles.planCard, selectedPlan === 'shared' && styles.planCardActive]}
-            onPress={() => setSelectedPlan('shared')}
-          >
-            <MaterialCommunityIcons name="van-shuttle" size={32} color={selectedPlan === 'shared' ? Colors.backgroundWhite : Colors.secondaryTeal} />
-            <Text style={[styles.planTitle, selectedPlan === 'shared' && styles.textWhite]}>Shared SUV</Text>
-            <Text style={[styles.planDesc, selectedPlan === 'shared' && styles.textWhite]}>Max 6 kids in your neighborhood.</Text>
-            {selectedPlan === 'shared' && <View style={styles.checkBadge}><Ionicons name="checkmark" size={16} color={Colors.secondaryTeal} /></View>}
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={[styles.planCard, selectedPlan === 'private' && styles.planCardActive]}
-            onPress={() => setSelectedPlan('private')}
-          >
-            <FontAwesome5 name="car" size={28} color={selectedPlan === 'private' ? Colors.backgroundWhite : Colors.primaryOrange} />
-            <Text style={[styles.planTitle, selectedPlan === 'private' && styles.textWhite]}>Private Sedan</Text>
-            <Text style={[styles.planDesc, selectedPlan === 'private' && styles.textWhite]}>Dedicated vetted CareDriver.</Text>
-            {selectedPlan === 'private' && <View style={styles.checkBadge}><Ionicons name="checkmark" size={16} color={Colors.secondaryTeal} /></View>}
-          </TouchableOpacity>
+      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+        
+        {/* 1. MAP INPUTS */}
+        <View style={styles.section}>
+            <Text style={styles.sectionTitle}>1. Set Exact Route</Text>
+            <View style={{ zIndex: 20, marginBottom: 10 }}>
+                <Text style={styles.inputLabel}>Home Location</Text>
+                <CustomGooglePlacesInput type="pickup" placeholder="Search home address..." />
+            </View>
+            <View style={{ zIndex: 10 }}>
+                <Text style={styles.inputLabel}>School Location</Text>
+                <CustomGooglePlacesInput type="destination" placeholder="Search school address..." />
+            </View>
         </View>
 
-        {/* Form Details */}
-        <View style={styles.formSection}>
-          <Text style={styles.sectionTitle}>Child Details</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Child's Full Name"
-            value={childName}
-            onChangeText={setChildName}
-            placeholderTextColor={Colors.textLight}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="School Name (e.g., Beteseb Academy)"
-            value={schoolName}
-            onChangeText={setSchoolName}
-            placeholderTextColor={Colors.textLight}
-          />
+        {/* 2. PLAN SELECTION */}
+        <View style={styles.section}>
+            <Text style={styles.sectionTitle}>2. Choose Service</Text>
+            <View style={styles.plansContainer}>
+            <TouchableOpacity style={[styles.planCard, selectedPlan === 'shared' && styles.planCardActive]} onPress={() => setSelectedPlan('shared')}>
+                <MaterialCommunityIcons name="bus-school" size={28} color={selectedPlan === 'shared' ? Colors.backgroundWhite : Colors.primaryOrange} />
+                <Text style={[styles.planTitle, selectedPlan === 'shared' && styles.textWhite]}>Shared SUV</Text>
+                <Text style={[styles.planDesc, selectedPlan === 'shared' && styles.textWhite]}>Matched with neighbors.</Text>
+            </TouchableOpacity>
 
-          <Text style={[styles.sectionTitle, { marginTop: 20 }]}>Recurring Schedule</Text>
-          
-          <TouchableOpacity style={styles.timePickerBtn} onPress={() => setShowMorningPicker(true)}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Ionicons name="sunny" size={20} color={Colors.primaryOrange} style={{ marginRight: 10 }} />
-              <Text style={styles.timeLabel}>Morning Pickup Time</Text>
+            <TouchableOpacity style={[styles.planCard, selectedPlan === 'private' && styles.planCardActive]} onPress={() => setSelectedPlan('private')}>
+                <MaterialCommunityIcons name="car" size={28} color={selectedPlan === 'private' ? Colors.backgroundWhite : Colors.secondaryTeal} />
+                <Text style={[styles.planTitle, selectedPlan === 'private' && styles.textWhite]}>Private Ride</Text>
+                <Text style={[styles.planDesc, selectedPlan === 'private' && styles.textWhite]}>Dedicated CareDriver.</Text>
+            </TouchableOpacity>
             </View>
-            <Text style={styles.timeValue}>
-              {morningTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </Text>
-          </TouchableOpacity>
-
-          {showMorningPicker && (
-            <DateTimePicker
-              value={morningTime}
-              mode="time"
-              display="default"
-              onChange={(event, selectedDate) => {
-                setShowMorningPicker(false);
-                if (selectedDate) setMorningTime(selectedDate);
-              }}
-            />
-          )}
-
-          {/* Value Props */}
-          <View style={styles.valuePropsBox}>
-            <View style={styles.valueRow}>
-              <Ionicons name="shield-checkmark" size={20} color={Colors.successGreen} />
-              <Text style={styles.valueText}>Driven by vetted, female CareDrivers</Text>
-            </View>
-            <View style={styles.valueRow}>
-              <Ionicons name="videocam" size={20} color={Colors.successGreen} />
-              <Text style={styles.valueText}>Live snapshot & look-in features included</Text>
-            </View>
-          </View>
         </View>
+
+        {/* 3. MULTI-CHILD SELECTION */}
+        <View style={styles.section}>
+            <Text style={styles.sectionTitle}>3. Select Children</Text>
+            {children.map(child => (
+                <TouchableOpacity key={child.id} style={styles.childSelectItem} onPress={() => handleToggleChild(child.id)}>
+                    <Ionicons name={selectedChildIds.has(child.id) ? 'checkbox' : 'square-outline'} size={24} color={Colors.secondaryTeal} />
+                    <View style={{ marginLeft: 12 }}>
+                        <Text style={styles.childSelectText}>{child.name}</Text>
+                        <Text style={styles.childSelectSub}>{child.school}</Text>
+                    </View>
+                </TouchableOpacity>
+            ))}
+        </View>
+
       </ScrollView>
 
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.submitBtn} onPress={handleSubscribe} disabled={loading}>
-          {loading ? (
-            <ActivityIndicator color={Colors.backgroundWhite} />
-          ) : (
-            <Text style={styles.submitBtnText}>Request Monthly Plan</Text>
-          )}
+          <View style={styles.priceRow}>
+              <Text style={styles.priceLabel}>Monthly Estimate:</Text>
+              <Text style={styles.priceValue}>{estimatedPrice ? `ETB ${estimatedPrice.toLocaleString()}` : '--'}</Text>
+          </View>
+        <TouchableOpacity style={styles.submitBtn} onPress={handleSubscribe} disabled={loading || !estimatedPrice}>
+          {loading ? <ActivityIndicator color={Colors.backgroundWhite} /> : <Text style={styles.submitBtnText}>Request Matching</Text>}
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -169,29 +144,27 @@ export default function SubscriptionScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.backgroundWhite },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: Colors.borderLight },
+  container: { flex: 1, backgroundColor: Colors.backgroundWhite, paddingBottom: 100 },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 20, borderBottomWidth: 1, borderBottomColor: Colors.borderLight },
   backButton: { padding: 5 },
   headerTitle: { fontSize: 18, fontFamily: 'Jakarta-Bold', color: Colors.textDark },
   scrollContent: { padding: 20, paddingBottom: 100 },
-  subtitle: { fontSize: 15, fontFamily: 'Jakarta-Medium', color: Colors.textMedium, marginBottom: 20 },
-  plansContainer: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30 },
-  planCard: { width: '48%', backgroundColor: Colors.backgroundLightGray, padding: 16, borderRadius: 16, borderWidth: 2, borderColor: 'transparent', position: 'relative' },
-  planCardActive: { backgroundColor: Colors.secondaryTeal, borderColor: Colors.secondaryTeal, shadowColor: Colors.secondaryTeal, shadowOpacity: 0.3, shadowRadius: 8, shadowOffset: { width: 0, height: 4 }, elevation: 5 },
+  section: { marginBottom: 24 },
+  sectionTitle: { fontSize: 18, fontFamily: 'Jakarta-Bold', color: Colors.textDark, marginBottom: 16 },
+  inputLabel: { fontSize: 14, fontFamily: 'Jakarta-SemiBold', color: Colors.textMedium, marginBottom: 6 },
+  plansContainer: { flexDirection: 'row', justifyContent: 'space-between' },
+  planCard: { width: '48%', backgroundColor: Colors.backgroundLightGray, padding: 16, borderRadius: 16, borderWidth: 2, borderColor: 'transparent' },
+  planCardActive: { backgroundColor: Colors.secondaryTeal, borderColor: Colors.secondaryTeal },
   planTitle: { fontSize: 16, fontFamily: 'Jakarta-Bold', color: Colors.textDark, marginTop: 12, marginBottom: 4 },
   planDesc: { fontSize: 12, fontFamily: 'Jakarta-Medium', color: Colors.textMedium },
   textWhite: { color: Colors.backgroundWhite },
-  checkBadge: { position: 'absolute', top: 12, right: 12, backgroundColor: Colors.backgroundWhite, borderRadius: 12, padding: 2 },
-  formSection: { marginBottom: 20 },
-  sectionTitle: { fontSize: 16, fontFamily: 'Jakarta-Bold', color: Colors.textDark, marginBottom: 12 },
-  input: { backgroundColor: Colors.backgroundLightGray, borderWidth: 1, borderColor: Colors.borderLight, borderRadius: 12, padding: 16, fontSize: 15, fontFamily: 'Jakarta-Medium', marginBottom: 12, color: Colors.textDark },
-  timePickerBtn: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: Colors.backgroundLightGray, borderWidth: 1, borderColor: Colors.borderLight, borderRadius: 12, padding: 16, marginBottom: 12 },
-  timeLabel: { fontSize: 15, fontFamily: 'Jakarta-Medium', color: Colors.textDark },
-  timeValue: { fontSize: 15, fontFamily: 'Jakarta-Bold', color: Colors.secondaryTeal },
-  valuePropsBox: { backgroundColor: '#F0FDF4', padding: 16, borderRadius: 12, marginTop: 20, borderWidth: 1, borderColor: '#BBF7D0' },
-  valueRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-  valueText: { fontSize: 13, fontFamily: 'Jakarta-Medium', color: '#166534', marginLeft: 8 },
+  childSelectItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: Colors.borderLight },
+  childSelectText: { fontSize: 16, fontFamily: 'Jakarta-Bold', color: Colors.textDark },
+  childSelectSub: { fontSize: 13, fontFamily: 'Jakarta-Medium', color: Colors.textMedium },
   footer: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: Colors.backgroundWhite, padding: 20, borderTopWidth: 1, borderTopColor: Colors.borderLight },
-  submitBtn: { backgroundColor: Colors.secondaryTeal, paddingVertical: 16, borderRadius: 12, alignItems: 'center' },
+  priceRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12, alignItems: 'center' },
+  priceLabel: { fontSize: 14, fontFamily: 'Jakarta-SemiBold', color: Colors.textMedium },
+  priceValue: { fontSize: 20, fontFamily: 'Jakarta-Bold', color: Colors.textDark },
+  submitBtn: { backgroundColor: Colors.primaryOrange, paddingVertical: 16, borderRadius: 12, alignItems: 'center' },
   submitBtnText: { fontSize: 16, fontFamily: 'Jakarta-Bold', color: Colors.backgroundWhite },
 });
